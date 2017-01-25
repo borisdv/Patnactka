@@ -84,17 +84,25 @@ public class PuzzlePiece : MonoBehaviour, IPuzzleTile
     /// </summary>
     void OnMouseUp()
     {
+        
         if (_freeDirection != Direction.NONE)
         {
-            if (Vector3.Distance(transform.position, _dragEndPoint) < Vector3.Distance(transform.position, _dragStartPoint))
+            if (Vector3.Distance(transform.position, _dragStartPoint) < 0.2f)
             {
-                transform.position = _dragEndPoint;
-                _puzzleGameScript.PieceMoved(this);
-
+                StartCoroutine(Move(0.2f));
             }
             else
             {
-                transform.position = _dragStartPoint;
+                if (Vector3.Distance(transform.position, _dragEndPoint) < Vector3.Distance(transform.position, _dragStartPoint))
+                {
+                    transform.position = _dragEndPoint;
+                    _puzzleGameScript.PieceMoved(this);
+
+                }
+                else
+                {
+                    transform.position = _dragStartPoint;
+                }
             }
         }
     }
@@ -125,6 +133,18 @@ public class PuzzlePiece : MonoBehaviour, IPuzzleTile
                 transform.position = new Vector3(transform.position.x, transform.position.y, Mathf.Clamp(curPosition.z, _dragEndPoint.z, _dragStartPoint.z));
             }
         }
+    }
+
+    IEnumerator Move(float speed)
+    {
+        Debug.Log("LOLZ");
+
+        for (float t = 0f; t < 1f; t += Time.deltaTime / speed)
+        {
+            transform.position = Vector3.Lerp(_dragStartPoint, _dragEndPoint, t);
+            yield return null;
+        }
+        _puzzleGameScript.PieceMoved(this);
     }
     /// <summary>
     /// Sets the free movement direction of a puzzle piece
