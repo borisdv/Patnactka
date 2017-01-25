@@ -49,7 +49,7 @@ public class PuzzleGame : MonoBehaviour
 
     public void NewGame()
     {
-
+        moves=0;
         canvas.SetMovesCount(0);
         do
         {
